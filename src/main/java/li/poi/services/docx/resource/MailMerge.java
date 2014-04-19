@@ -47,14 +47,30 @@ public class MailMerge {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public MailMergeResponse merge(MailMergeRequest request){
         MailMergeResponse response = new MailMergeResponse();
+        File template = null;
+        File output = null;
         try {
             MailMergeController controller = new MailMergeController();
-            File template =  File.createTempFile("template", ".docx");
+            template =  File.createTempFile("template", ".docx");
             FileUtils.writeByteArrayToFile(template, request.getTemplate());
-            File output = controller.getMergedDocument(template, request.getValues());
+            output = controller.getMergedDocument(template, request.getValues());
             response.setDocument(Base64.encodeBase64String(IOUtils.toByteArray(new FileInputStream(output))));
         } catch (IOException e) {
             response.setError(e.getMessage());
+        } finally {
+            // delete the files
+            if(template != null){
+                boolean deleted = template.delete();
+                if(!deleted){
+                    System.out.println("file not deleted " + template.getAbsolutePath());
+                }
+            }
+            if(output != null){
+                boolean deleted = output.delete();
+                if(!deleted){
+                    System.out.println("file not deleted " + output.getAbsolutePath());
+                }
+            }
         }
         return response;
     }
