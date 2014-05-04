@@ -3,6 +3,7 @@ package li.poi.services.docx.resource;
 import li.poi.services.docx.control.MailMergeController;
 import li.poi.services.docx.model.MailMergeRequest;
 import li.poi.services.docx.model.MailMergeResponse;
+import li.poi.services.docx.model.VersionInfo;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -25,9 +26,16 @@ import java.io.IOException;
 public class MailMerge {
     private static Logger log = Logger.getLogger(MailMerge.class.getName());
 
+    @Path("/version")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public VersionInfo version(){
+        return new VersionInfo("0.1");
+    }
+
     @Path("/test")
     @GET
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public MailMergeResponse test() throws Docx4JException {
         MailMergeResponse mail = new MailMergeResponse();
         File tmp = null;
