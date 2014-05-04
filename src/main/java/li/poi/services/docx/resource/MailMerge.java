@@ -31,10 +31,27 @@ public class MailMerge {
     @Path("/test")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public MergedMail test() throws Docx4JException {
-        WordprocessingMLPackage wp = Docx4J.load(new File("/Users/Iwan/Developer/docxservice/src/main/templates/confirmationletter.docx"));
-        MergedMail mail = new MergedMail();
-        mail.setName("success");
+    public MailMergeResponse test() throws Docx4JException {
+        MailMergeResponse mail = new MailMergeResponse();
+        File tmp = null;
+        try {
+            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
+            wordMLPackage.getMainDocumentPart().addParagraphOfText("Hello Word!");
+
+            tmp = File.createTempFile("document", "docx");
+            wordMLPackage.save(tmp);
+            mail.setDocument(Base64.encodeBase64String(IOUtils.toByteArray(new FileInputStream(tmp))));
+            mail.setError("success");
+            mail.setDocumentName(tmp.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+            mail.setError("error... " + e.getMessage());
+        } finally {
+            if(tmp != null){
+                tmp.delete();
+            }
+        }
+
         return mail;
     }
 
