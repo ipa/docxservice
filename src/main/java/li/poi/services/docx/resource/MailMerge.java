@@ -1,6 +1,5 @@
 package li.poi.services.docx.resource;
 
-import com.sun.scenario.effect.Merge;
 import li.poi.services.docx.control.MailMergeController;
 import li.poi.services.docx.model.MailMergeRequest;
 import li.poi.services.docx.model.MailMergeResponse;
@@ -9,7 +8,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.docx4j.Docx4J;
-import org.docx4j.model.fields.merge.DataFieldName;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
@@ -17,7 +15,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,13 +42,13 @@ public class MailMerge {
     @PUT
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public MailMergeResponse merge(MailMergeRequest request){
+    public MailMergeResponse merge(MailMergeRequest request) {
         MailMergeResponse response = new MailMergeResponse();
         File template = null;
         File output = null;
         try {
             MailMergeController controller = new MailMergeController();
-            template =  File.createTempFile("template", ".docx");
+            template = File.createTempFile("template", ".docx");
             FileUtils.writeByteArrayToFile(template, request.getTemplate());
             output = controller.getMergedDocument(template, request.getValues());
             response.setDocument(Base64.encodeBase64String(IOUtils.toByteArray(new FileInputStream(output))));
@@ -59,15 +56,15 @@ public class MailMerge {
             response.setError(e.getMessage());
         } finally {
             // delete the files
-            if(template != null){
+            if (template != null) {
                 boolean deleted = template.delete();
-                if(!deleted){
+                if (!deleted) {
                     System.out.println("file not deleted " + template.getAbsolutePath());
                 }
             }
-            if(output != null){
+            if (output != null) {
                 boolean deleted = output.delete();
-                if(!deleted){
+                if (!deleted) {
                     System.out.println("file not deleted " + output.getAbsolutePath());
                 }
             }
@@ -84,7 +81,7 @@ public class MailMerge {
         List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put( "Vorname", "Plutext");
+        map.put("Vorname", "Plutext");
         map.put("Nachname", "Bourke Street");
         map.put("Adresszeile_1", "Strasse");
         map.put("Postleitzahl", "6003");
