@@ -1,8 +1,6 @@
 package li.poi.services.docx.control;
 
 
-import static org.junit.Assert.assertNotNull;
-
 /**
  * User: Iwan Paolucci
  * Date: 15.04.14
