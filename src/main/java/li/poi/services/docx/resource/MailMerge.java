@@ -3,11 +3,10 @@ package li.poi.services.docx.resource;
 import li.poi.services.docx.control.MailMergeController;
 import li.poi.services.docx.model.MailMergeRequest;
 import li.poi.services.docx.model.MailMergeResponse;
-import li.poi.services.docx.model.MergedMail;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.docx4j.Docx4J;
+import org.apache.log4j.Logger;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
@@ -16,10 +15,6 @@ import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * User: Iwan Paolucci
@@ -28,6 +23,8 @@ import java.util.Map;
  */
 @Path("/mailmerge")
 public class MailMerge {
+    private static Logger log = Logger.getLogger(MailMerge.class.getName());
+
     @Path("/test")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -47,8 +44,11 @@ public class MailMerge {
             e.printStackTrace();
             mail.setError("error... " + e.getMessage());
         } finally {
-            if(tmp != null){
-                tmp.delete();
+            if (tmp != null) {
+                boolean deleted = tmp.delete();
+                if (!deleted) {
+                    log.warn("file not deleted " + tmp.getAbsolutePath());
+                }
             }
         }
 
@@ -76,53 +76,16 @@ public class MailMerge {
             if (template != null) {
                 boolean deleted = template.delete();
                 if (!deleted) {
-                    System.out.println("file not deleted " + template.getAbsolutePath());
+                    log.warn("file not deleted " + template.getAbsolutePath());
                 }
             }
             if (output != null) {
                 boolean deleted = output.delete();
                 if (!deleted) {
-                    System.out.println("file not deleted " + output.getAbsolutePath());
+                    log.warn("file not deleted " + output.getAbsolutePath());
                 }
             }
         }
         return response;
-    }
-
-    @Path("/doc")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public MergedMail doc() throws IOException {
-        MailMergeController controller = new MailMergeController();
-
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("Vorname", "Plutext");
-        map.put("Nachname", "Bourke Street");
-        map.put("Adresszeile_1", "Strasse");
-        map.put("Postleitzahl", "6003");
-        map.put("Ort", "Luzern");
-        map.put("Preis", "1500 SFr.");
-
-        data.add(map);
-
-        map = new HashMap<String, String>();
-        map.put("Vorname", "Iwan");
-        map.put("Nachname", "Paolucci");
-        map.put("Adresszeile_1", "Strasse");
-        map.put("Postleitzahl", "6003");
-        map.put("Ort", "Luzern");
-        map.put("Preis", "1500 SFr.");
-
-        data.add(map);
-
-        File template = new File("/Users/Iwan/Downloads/testfile.docx");
-        File output = controller.getMergedDocument(template, data);
-        MergedMail merge = new MergedMail();
-        merge.setName("test");
-        merge.setDocument(IOUtils.toByteArray(new FileInputStream(output.getAbsoluteFile())));
-
-        return merge;
     }
 }

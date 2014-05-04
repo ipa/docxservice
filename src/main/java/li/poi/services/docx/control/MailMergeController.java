@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class MailMergeController {
 
-    public File getMergedDocument(File template, List<Map<String, String>> data){
+    public File getMergedDocument(File template, List<Map<String, String>> data) {
         try {
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(template);
             List<Map<DataFieldName, String>> replaceVars = convertReplaceVariables(data);
@@ -38,10 +38,10 @@ public class MailMergeController {
 
     private List<Map<DataFieldName, String>> convertReplaceVariables(List<Map<String, String>> data) {
         List<Map<DataFieldName, String>> replaceVars = new ArrayList<Map<DataFieldName, String>>();
-        for(Map<String, String> d : data){
+        for (Map<String, String> d : data) {
             Map<DataFieldName, String> map = new HashMap<DataFieldName, String>();
-            for(String s : d.keySet()){
-                map.put( new DataFieldName(s), d.get(s));
+            for (String s : d.keySet()) {
+                map.put(new DataFieldName(s), d.get(s));
             }
             replaceVars.add(map);
         }
