@@ -11,17 +11,17 @@ import java.util.Map;
  */
 @XmlRootElement
 public class MailMergeRequest {
-    private byte[] template;
+    private String template;
     private List<Map<String, String>> values;
 
     public MailMergeRequest() {
     }
 
-    public byte[] getTemplate() {
+    public String getTemplate() {
         return template;
     }
 
-    public void setTemplate(byte[] template) {
+    public void setTemplate(String template) {
         this.template = template;
     }
 

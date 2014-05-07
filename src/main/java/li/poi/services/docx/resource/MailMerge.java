@@ -74,7 +74,7 @@ public class MailMerge {
         try {
             MailMergeController controller = new MailMergeController();
             template = File.createTempFile("template", ".docx");
-            FileUtils.writeByteArrayToFile(template, request.getTemplate());
+            FileUtils.writeByteArrayToFile(template, Base64.decodeBase64(request.getTemplate()));
             output = controller.getMergedDocument(template, request.getValues());
             response.setDocument(Base64.encodeBase64String(IOUtils.toByteArray(new FileInputStream(output))));
         } catch (IOException e) {
