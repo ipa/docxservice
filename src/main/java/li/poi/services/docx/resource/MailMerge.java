@@ -30,7 +30,7 @@ public class MailMerge {
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public VersionInfo version() {
-        return new VersionInfo("0.1");
+        return new VersionInfo("0.2");
     }
 
     @Path("/test")
