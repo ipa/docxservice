@@ -79,6 +79,9 @@ public class MailMerge {
             response.setDocument(Base64.encodeBase64String(IOUtils.toByteArray(new FileInputStream(output))));
         } catch (IOException e) {
             response.setError(e.getMessage());
+        } catch (Exception e){
+            response.setError(e.getMessage());
+            log.error(e.getMessage());
         } finally {
             // delete the files
             if (template != null) {

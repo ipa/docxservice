@@ -24,7 +24,7 @@ public class MailMergeController {
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(template);
             List<Map<DataFieldName, String>> replaceVars = convertReplaceVariables(data);
 
-            WordprocessingMLPackage output = MailMerger.getConsolidatedResultCrude(wordMLPackage, replaceVars);
+            WordprocessingMLPackage output = MailMerger.getConsolidatedResultCrude(wordMLPackage, replaceVars, true);
 
             File outputFile = File.createTempFile("document", ".docx");
             output.save(outputFile);
